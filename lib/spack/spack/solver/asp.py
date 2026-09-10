@@ -302,9 +302,12 @@ def all_libcs() -> Set[spack.spec.Spec]:
 
 
 def libc_is_compatible(lhs: spack.spec.Spec, rhs: spack.spec.Spec) -> List[spack.spec.Spec]:
+    # LOCAL PATCH (linard): the host glibc (2.38, external_path "/") is newer than and
+    # backward compatible with the glibc the /mch-environment/v8 uenv packages were built
+    # against (2.31, external_path "/usr"). Requiring identical external_path here wrongly
+    # blocks reuse of the uenv upstream, so compare name and version only.
     return (
         lhs.name == rhs.name
-        and lhs.external_path == rhs.external_path
         and lhs.version >= rhs.version
     )
 
